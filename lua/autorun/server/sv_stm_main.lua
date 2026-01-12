@@ -1,20 +1,20 @@
-util.AddNetworkString("SimpleTauntMenu/Play")
-util.AddNetworkString("SimpleTauntMenu/Taunts")
+util.AddNetworkString("SimpleTaunts/Play")
+util.AddNetworkString("SimpleTaunts/Taunts")
 
 local function SendTauntsToAll(tauntsTable)
-    net.Start("SimpleTauntMenu/Taunts")
+    net.Start("SimpleTaunts/Taunts")
     net.WriteTable(tauntsTable)
     net.Broadcast()
 end
 
 local function SendTauntsToPlayer(ply, tauntsTable)
-    net.Start("SimpleTauntMenu/Taunts")
+    net.Start("SimpleTaunts/Taunts")
     net.WriteTable(tauntsTable)
     net.Send(ply)
 end
 
 net.Receive(
-    "SimpleTauntMenu/Play",
+    "SimpleTaunts/Play",
     function(len, ply)
         -- Check if player is not spectating
         if ply:GetObserverMode() ~= OBS_MODE_NONE then
@@ -33,7 +33,7 @@ net.Receive(
 
 hook.Add(
     "PlayerInitialSpawn",
-    "SimpleTauntMenu",
+    "SimpleTaunts_initial_spawn",
     function(ply)
         SendTauntsToPlayer(ply, TAUNTS_TABLE)
     end
@@ -41,7 +41,7 @@ hook.Add(
 
 hook.Add(
     "Initialize",
-    "SimpleTauntMenu",
+    "SimpleTaunts_init",
     function()
         SendTauntsToAll(TAUNTS_TABLE)
     end

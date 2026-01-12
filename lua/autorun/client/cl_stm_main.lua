@@ -7,7 +7,7 @@ local menuKey = input.LookupBinding("+menu_context")
 local menuButtonCode = input.GetKeyCode(menuKey)
 
 local function PlayTaunt(soundPath)
-    net.Start("SimpleTauntMenu/Play")
+    net.Start("SimpleTaunts/Play")
     net.WriteString(soundPath)
     net.SendToServer()
 end
@@ -64,7 +64,7 @@ local function HideMenu()
 end
 
 net.Receive(
-    "SimpleTauntMenu/Taunts",
+    "SimpleTaunts/Taunts",
     function()
         tauntsTable = net.ReadTable()
     end
@@ -72,7 +72,7 @@ net.Receive(
 
 hook.Add(
     "Think",
-    "SimpleTauntMenu",
+    "SimpleTaunts",
     function()
         if tauntsTable == nil then
             return
