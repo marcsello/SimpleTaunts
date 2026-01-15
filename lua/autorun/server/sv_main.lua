@@ -54,4 +54,16 @@ net.Receive(
     end
 )
 
+hook.Add(
+    "ShowSpare1",
+    "SimpleTaunts_random_taunt",
+    function(ply)
+        local categoryID = math.random(#TAUNTS_TABLE)
+        local cat = TAUNTS_TABLE[categoryID]
+        local soundID = math.random(#cat["sounds"])
+        PlayTaunt(ply, categoryID, soundID)
+        return false -- prevent Default handler
+    end
+)
+
 print("SimpleTaunts loaded!")
