@@ -1,9 +1,9 @@
 util.AddNetworkString("SimpleTaunts/Play")
 
 local function PlayTaunt(ply, categoryID, soundID)
-    -- Check if the player is allowed to taunt at all
+    -- Check if the player is allowedTaunts to taunt at all
     local canTaunt = hook.Run("SimpleTaunts/CanTaunt", ply)
-    if canTaunt ~= nil && not canTaunt then
+    if canTaunt ~= nil and not canTaunt then
         -- A hook prevented running
         return
     end
@@ -13,7 +13,7 @@ local function PlayTaunt(ply, categoryID, soundID)
     local sound = category["sounds"][soundID]
 
     local canUseTaunt = hook.Run("SimpleTaunts/CanUseTaunt", ply, categoryID, category["category"], sound)
-    if canUseTaunt ~= nil && not canUseTaunt then
+    if canUseTaunt ~= nil and not canUseTaunt then
         -- The player can not use this taunt
         return
     end
@@ -31,7 +31,7 @@ local function PlayTaunt(ply, categoryID, soundID)
     end
 
     -- Check for cooldown
-    if (ply.simpleTauntsCooldown ~= nil && ply.simpleTauntsCooldown >= UnPredictedCurTime()) then
+    if (ply.simpleTauntsCooldown ~= nil and ply.simpleTauntsCooldown >= UnPredictedCurTime()) then
         ply.simpleTauntsCooldown = ply.simpleTauntsCooldown + 1
         local secondsRemaining = math.Round(ply.simpleTauntsCooldown - UnPredictedCurTime())
         ply:ChatPrint("Please wait " .. secondsRemaining .. " seconds before taunting again.")
@@ -58,10 +58,32 @@ hook.Add(
     "ShowSpare1",
     "SimpleTaunts_random_taunt",
     function(ply)
-        local categoryID = math.random(#TAUNTS_TABLE)
-        local cat = TAUNTS_TABLE[categoryID]
-        local soundID = math.random(#cat["sounds"])
-        PlayTaunt(ply, categoryID, soundID)
+        if TAUNTS_TABLE == nil then
+            return false
+        end
+
+        if ply.allowedTaunts == nil then
+            -- Build a list of all allowed taunts for this player
+            local allowedTaunts = {}
+            for categoryID, categoryData in ipairs(TAUNTS_TABLE) do
+                for soundID, soundData in ipairs(categoryData["sounds"]) do
+                    local canUseTaunt = hook.Run("SimpleTaunts/CanUseTaunt", ply, categoryID, categoryData["category"], soundData)
+                    if canUseTaunt == nil or canUseTaunt then
+                        table.insert(allowedTaunts, { ["categoryID"] = categoryID, ["soundID"] = soundID })
+                    end
+                end
+            end
+
+            -- We cache this list for faster lookup
+            ply.allowedTaunts = allowedTaunts
+        end
+
+        if not ply.allowedTaunts or #ply.allowedTaunts == 0 then
+            return false -- no allowed taunts, do nothing
+        end
+
+        local taunt = ply.allowedTaunts[math.random(#ply.allowedTaunts)]
+        PlayTaunt(ply, taunt.categoryID, taunt.soundID)
         return false -- prevent Default handler
     end
 )

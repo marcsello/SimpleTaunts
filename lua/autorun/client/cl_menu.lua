@@ -18,8 +18,8 @@ local function CreateMenu()
 
         local allowedSounds = {}
         for soundID, soundData in ipairs(categoryData["sounds"]) do
-            local canUseTaunt = hook.Run("SimpleTaunts/CanUseTaunt", ply, categoryID, categoryData["category"], sound)
-            if canUseTaunt == nil || canUseTaunt then
+            local canUseTaunt = hook.Run("SimpleTaunts/CanUseTaunt", LocalPlayer(), categoryID, categoryData["category"], soundData)
+            if canUseTaunt == nil or canUseTaunt then
                 allowedSounds[soundID] = soundData
             end
         end
