@@ -41,12 +41,12 @@ There are two hooks you can register to limit who can play what taunt.
 `SimpleTaunts/CanTaunt` and `SimpleTaunts/CanUseTaunt`:
 
 ```lua
-hook.Add("SimpleTaunts/CanTaunt", "", function (ply)
+hook.Add("SimpleTaunts/CanTaunt", "", function (Player ply)
  ...
 end)
 
 
-hook.Add("SimpleTaunts/CanUseTaunt", "", function (ply, categoryID, categoryName, soundData)
+hook.Add("SimpleTaunts/CanUseTaunt", "", function (Player ply, number categoryID, string categoryName, table soundData)
  ...
 end)
 ```
