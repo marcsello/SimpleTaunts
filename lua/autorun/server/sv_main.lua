@@ -88,4 +88,8 @@ hook.Add(
     end
 )
 
+-- Clear cache on these events
+hook.Add("PlayerSpawn", "SimpleTaunts_ClearCache_OnSpawn", function(ply) ply.allowedTaunts = nil end)
+hook.Add("PlayerChangedTeam", "SimpleTaunts_ClearCache_OnTeamChange", function(ply) ply.allowedTaunts = nil end)
+
 print("SimpleTaunts loaded!")

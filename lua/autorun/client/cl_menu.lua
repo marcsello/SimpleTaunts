@@ -88,3 +88,14 @@ hook.Add(
         end
     end
 )
+
+-- Invalidate menu on these events
+hook.Add("PlayerSpawn", "SimpleTaunts_ClearCache_OnSpawn", function()
+     HideMenu()
+     menu = nil
+end)
+
+hook.Add("PlayerChangedTeam", "SimpleTaunts_ClearCache_OnTeamChange", function() 
+    HideMenu()
+    menu = nil
+end)
