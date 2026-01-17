@@ -54,11 +54,13 @@ local function CreateMenu()
 end
 
 local function OpenMenu()
+    if not IsValid(menu) then return end
     menu:Open()
     menuOpen = true
 end
 
 local function HideMenu()
+    if not IsValid(menu) then return end
     menu:Hide()
     menuOpen = false
 end
@@ -89,13 +91,9 @@ hook.Add(
     end
 )
 
--- Invalidate menu on these events
-hook.Add("PlayerSpawn", "SimpleTaunts_ClearCache_OnSpawn", function()
+local function InvalidateCache()
      HideMenu()
      menu = nil
-end)
+end
 
-hook.Add("PlayerChangedTeam", "SimpleTaunts_ClearCache_OnTeamChange", function() 
-    HideMenu()
-    menu = nil
-end)
+net.Receive("SimpleTaunts/Invalidate", InvalidateCache)

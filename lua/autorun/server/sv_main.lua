@@ -1,4 +1,5 @@
 util.AddNetworkString("SimpleTaunts/Play")
+util.AddNetworkString("SimpleTaunts/Invalidate")
 
 local function PlayTaunt(ply, categoryID, soundID)
     -- Check if the player is allowedTaunts to taunt at all
@@ -89,7 +90,16 @@ hook.Add(
 )
 
 -- Clear cache on these events
-hook.Add("PlayerSpawn", "SimpleTaunts_ClearCache_OnSpawn", function(ply) ply.allowedTaunts = nil end)
-hook.Add("PlayerChangedTeam", "SimpleTaunts_ClearCache_OnTeamChange", function(ply) ply.allowedTaunts = nil end)
+
+local function InvalidateCache(ply)
+    ply.allowedTaunts = nil
+    -- I would be so much happier if the Client could figure this out themselves, but it just can't...
+    net.Start("SimpleTaunts/Invalidate")
+    net.Send(ply)
+end
+
+hook.Add("PlayerSpawn", "SimpleTaunts_InvalidateCache_OnSpawn", function(ply) InvalidateCache(ply) end)
+hook.Add("PlayerChangedTeam", "SimpleTaunts_InvalidateCache_OnTeamChange", function(ply) InvalidateCache(ply) end)
+hook.Add("PostPlayerDeath", "SimpleTaunts_InvalidateCache_OnDeath", function(ply) InvalidateCache(ply) end)
 
 print("SimpleTaunts loaded!")
