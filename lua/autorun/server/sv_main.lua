@@ -94,8 +94,11 @@ hook.Add(
 local function InvalidateCache(ply)
     ply.allowedTaunts = nil
     -- I would be so much happier if the Client could figure this out themselves, but it just can't...
-    net.Start("SimpleTaunts/Invalidate")
-    net.Send(ply)
+    timer.Simple(0.5, function ()
+        -- The server is usually a step ahead of the client, so we must compensate...
+        net.Start("SimpleTaunts/Invalidate")
+        net.Send(ply)
+    end)
 end
 
 hook.Add("PlayerSpawn", "SimpleTaunts_InvalidateCache_OnSpawn", function(ply) InvalidateCache(ply) end)
